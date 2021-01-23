@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary").v2;
 const Offer = require("../models/Offer");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
-router.post("/user/publish", isAuthenticated, async (req, res) => {
+router.post("/offer/publish", isAuthenticated, async (req, res) => {
     // console.log(req.files.picture.path); // Local picture basket
 
     try {
@@ -57,15 +57,12 @@ router.post("/user/publish", isAuthenticated, async (req, res) => {
         });
 
         const pictureToUpload = req.files.picture.path;
-
+        // console.log(pictureToUpload);
         // // Requête pour cloudinary
-        const result = await cloudinary.uploader.upload(
-            req.files.picture.path,
-            {
-                folder: `/vinted/offers/${newOffer._id}`,
-            }
-        );
-        // // console.log(result); // Cloudinary Object
+        const result = await cloudinary.uploader.upload(pictureToUpload, {
+            folder: `/vinted/offers/${newOffer._id}`,
+        });
+        console.log(result); // Cloudinary Object
         // // console.log(result.secure_url); // Secured picture URL
 
         // Aujouter le resultat de l'upload dans newOffer
@@ -216,7 +213,7 @@ router.put("/offer/update/:id", isAuthenticated, async (req, res) => {
             const result = await cloudinary.uploader.upload(
                 req.files.picture.path,
                 {
-                    public_id: `api/vinted/offers/${offerToModify._id}/preview`,
+                    public_id: `/vinted/offers/${offerToModify._id}/preview`,
                 }
             );
             offerToModify.product_image = result;
@@ -237,12 +234,10 @@ router.delete("/offer/delete/:id", isAuthenticated, async (req, res) => {
     try {
         //Je supprime ce qui il y a dans le dossier
         await cloudinary.api.delete_resources_by_prefix(
-            `api/vinted/offers/${req.params.id}`
+            `/vinted/offers/${req.params.id}`
         );
         //Une fois le dossier vide, je peux le supprimer !
-        await cloudinary.api.delete_folder(
-            `api/vinted/offers/${req.params.id}`
-        );
+        await cloudinary.api.delete_folder(`/vinted/offers/${req.params.id}`);
 
         offerToDelete = await Offer.findById(req.params.id);
 
