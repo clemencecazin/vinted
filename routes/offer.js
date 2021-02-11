@@ -53,7 +53,7 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
                 },
             ],
 
-            owner: req.user._id,
+            owner: req.user,
         });
 
         const pictureToUpload = req.files.picture.path;
