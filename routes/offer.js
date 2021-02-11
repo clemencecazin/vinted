@@ -140,7 +140,7 @@ router.get("/offers", async (req, res) => {
             .sort(sort)
             .skip((page - 1) * limit)
             .limit(limit)
-            .select("product_name product_price");
+            .select();
         res.status(200).json({
             count: count,
             offers: offers,
