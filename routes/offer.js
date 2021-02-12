@@ -87,7 +87,7 @@ router.get("/offers", async (req, res) => {
         // Si je reçois une query title
         if (req.query.title) {
             // j'ajoute une clé product_name à l'objet filters
-            filters.product_name = new RegExp(req.query.title, "i");
+            // filters.product_name = new RegExp(req.query.title, "i");
             filters.product_description = new RegExp(req.query.title, "i");
         }
 
