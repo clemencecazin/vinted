@@ -8,22 +8,20 @@ router.get("/", (req, res) => {
 });
 
 router.post("/payment", async (req, res) => {
-    console.log(req.fields.stripeToken);
     try {
         const response = await stripe.charges.create({
             amount: Number(req.fields.price) * 100,
             currency: "eur",
-            description: req.fields.description, // req.fields.description
+            description: req.fields.description,
             source: req.fields.stripeToken,
         });
-        console.log(response);
         if (response.status === "succeeded") {
             // Créer la commande (BDD)
             // Répondre au client
             res.status(200).json({ message: "Paiement validé" });
         }
     } catch (error) {
-        console.log(error.message);
+        res.status(400).json({ error: error.message });
     }
 });
 

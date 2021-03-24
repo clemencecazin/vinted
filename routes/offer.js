@@ -5,19 +5,8 @@ const Offer = require("../models/Offer");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 router.post("/offer/publish", isAuthenticated, async (req, res) => {
-    // console.log(req.files.picture.path); // Local picture basket
-
     try {
         // Add New Offer
-
-        // console.log(req.fields.title); // Air Max 90
-        // console.log(req.fields.description); // Air max 90, très peu portées
-        // console.log(req.fields.price); // 80
-        // console.log(req.fields.condition); // Neuf
-        // console.log(req.fields.city); // Paris
-        // console.log(req.fields.brand); // Nike
-        // console.log(req.fields.size); // 40
-        // console.log(req.fields.color); // Black
 
         // Destructuring
         const {
@@ -57,22 +46,21 @@ router.post("/offer/publish", isAuthenticated, async (req, res) => {
         });
 
         const pictureToUpload = req.files.picture.path;
-        // console.log(pictureToUpload);
-        // // Requête pour cloudinary
+
+        // Requête pour cloudinary
         const result = await cloudinary.uploader.upload(pictureToUpload, {
             folder: `/vinted/offers/${newOffer._id}`,
         });
-        console.log(result); // Cloudinary Object
-        // // console.log(result.secure_url); // Secured picture URL
+        // Cloudinary Object
 
-        // Aujouter le resultat de l'upload dans newOffer
+        // Ajouter le resultat de l'upload dans newOffer
         newOffer.product_image = result;
 
         await newOffer.save();
 
         await newOffer.populate("owner", "account").execPopulate(); // Dans l'objet newOffer, on populate l'account dans owner qui est en BDD
 
-        res.status(200).json(newOffer); // retourne l'offre
+        res.status(200).json(newOffer); // Retourne l'offre
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -117,11 +105,11 @@ router.get("/offers", async (req, res) => {
         }
 
         let page;
-        // forcer à afficher la page 1 si la query page n'est pas envoyée ou est envoyée avec 0 ou < -1
+        // Forcer à afficher la page 1 si la query page n'est pas envoyée ou est envoyée avec 0 ou < -1
         if (req.query.page < 1) {
             page = 1;
         } else {
-            // sinon, page est égale à ce qui est demandé
+            // Sinon, page est égale à ce qui est demandé
             page = Number(req.query.page);
         }
 
@@ -145,7 +133,7 @@ router.get("/offers", async (req, res) => {
             .skip((page - 1) * limit) // ignorer les x résultats
             .limit(limit); // renvoyer y résultats
 
-        // cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
+        // Cette ligne va nous retourner le nombre d'annonces trouvées en fonction des filtres
         const count = await Offer.countDocuments(filters);
 
         res.json({
@@ -167,7 +155,6 @@ router.get("/offer/:id", async (req, res) => {
         });
         res.json(offer);
     } catch (error) {
-        console.log(error.message);
         res.status(400).json({ message: error.message });
     }
 });
@@ -233,7 +220,6 @@ router.put("/offer/update/:id", isAuthenticated, async (req, res) => {
 
         res.status(200).json("Offer modified succesfully !");
     } catch (error) {
-        console.log(error.message);
         res.status(400).json({ error: error.message });
     }
 });
@@ -243,11 +229,9 @@ router.put("/offer/update/:id", isAuthenticated, async (req, res) => {
 router.delete("/offer/delete/:id", isAuthenticated, async (req, res) => {
     try {
         offerToDelete = await Offer.findByIdAndDelete(req.params.id);
-        console.log(offerToDelete);
 
         res.status(200).json("Offer deleted succesfully !");
     } catch (error) {
-        console.log(error.message);
         res.status(400).json({ error: error.message });
     }
 });

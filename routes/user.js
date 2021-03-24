@@ -13,13 +13,9 @@ const User = require("../models/User");
 router.post("/user/signup", async (req, res) => {
     try {
         const user = await User.findOne({ email: req.fields.email });
-        // console.log(req.fields.email)
-        // console.log(user);
-        // console.log(user.account.username);
-        // console.log(req.fields.username);
 
         if (!user) {
-            // Si non, on fait la suite...
+            // Si l'user n'existe pas, on fait la suite...
             // est-ce que je reçois tout ce qu'il faut ? (email, username, password)
             if (
                 req.fields.email &&
@@ -74,9 +70,6 @@ router.post("/user/signup", async (req, res) => {
 router.post("/user/login", async (req, res) => {
     try {
         const loginUser = await User.findOne({ email: req.fields.email });
-        // console.log(req.fields.email);
-        // console.log(loginUser.salt);
-        // console.log(req.fields.password);
 
         // Si le User est recoonnu dans la BBD grâce à son mail
         if (loginUser) {
@@ -87,7 +80,6 @@ router.post("/user/login", async (req, res) => {
             const newHash = SHA256(
                 req.fields.password + loginUser.salt
             ).toString(encBase64);
-            console.log("New Hash", newHash);
 
             // Check Hash : Vérifie si le newHash est égale à celui qui est dans la base de donnée
 

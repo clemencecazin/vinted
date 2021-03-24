@@ -20,6 +20,7 @@ app.use(userRoutes);
 app.use(offerRoutes);
 app.use(paymentRoutes);
 
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
